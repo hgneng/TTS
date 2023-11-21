@@ -17,7 +17,8 @@ from TTS.utils.audio import AudioProcessor
 import subprocess
 from datetime import datetime
 subprocess.call(["php", "/root/phpmailer/mail.php",
-    "cameronhuang@zhiwei-tech.com", "", "train start", datetime.now()])
+    "cameronhuang@zhiwei-tech.com", "", "train start",
+    datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
 
 # we use the same path as this script as our training folder.
 output_path = os.path.dirname(os.path.abspath(__file__))
@@ -90,4 +91,5 @@ trainer.fit()
 
 
 subprocess.call(["php", "/root/phpmailer/mail.php",
-    "cameronhuang@zhiwei-tech.com", "", "train end", datetime.now()])
+    "cameronhuang@zhiwei-tech.com", "", "train end",
+    datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
