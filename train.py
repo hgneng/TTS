@@ -15,7 +15,9 @@ from TTS.tts.utils.text.tokenizer import TTSTokenizer
 from TTS.utils.audio import AudioProcessor
 
 import subprocess
-subprocess.call(['php /root/phpmailer/mail.php cameronhuang@zhiwei-tech.com "" "train start" "at $(date)"'])
+from datetime import datetime
+subprocess.call(['php", "/root/phpmailer/mail.php",
+    "cameronhuang@zhiwei-tech.com", "", "train start", datetime.now()])
 
 # we use the same path as this script as our training folder.
 output_path = os.path.dirname(os.path.abspath(__file__))
@@ -87,4 +89,5 @@ trainer = Trainer(
 trainer.fit()
 
 
-subprocess.call(['php /root/phpmailer/mail.php cameronhuang@zhiwei-tech.com "" "train end" "at $(date)"'])
+subprocess.call(['php", "/root/phpmailer/mail.php",
+    "cameronhuang@zhiwei-tech.com", "", "train end", datetime.now()])
