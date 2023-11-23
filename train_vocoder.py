@@ -7,6 +7,12 @@ from TTS.vocoder.configs import HifiganConfig
 from TTS.vocoder.datasets.preprocess import load_wav_data
 from TTS.vocoder.models.gan import GAN
 
+import subprocess
+from datetime import datetime
+subprocess.call(["php", "/root/phpmailer/mail.php",
+    "cameronhuang@zhiwei-tech.com", "", "train start",
+    datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+
 output_path = os.path.dirname(os.path.abspath(__file__))
 
 config = HifiganConfig(
@@ -44,3 +50,8 @@ trainer = Trainer(
     TrainerArgs(), config, output_path, model=model, train_samples=train_samples, eval_samples=eval_samples
 )
 trainer.fit()
+
+
+subprocess.call(["php", "/root/phpmailer/mail.php",
+    "cameronhuang@zhiwei-tech.com", "", "train end",
+    datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
