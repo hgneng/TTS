@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import tarfile
 import zipfile
 from pathlib import Path
@@ -10,7 +11,7 @@ import fsspec
 import requests
 from tqdm import tqdm
 
-from TTS.config import load_config
+from TTS.config import load_config, read_json_with_comments
 from TTS.utils.generic_utils import get_user_data_dir
 
 LICENSE_URLS = {
@@ -27,6 +28,7 @@ LICENSE_URLS = {
 
 
 class ModelManager(object):
+    tqdm_progress = None
     """Manage TTS models defined in .models.json.
     It provides an interface to list and download
     models defines in '.model.json'
@@ -63,30 +65,7 @@ class ModelManager(object):
         Args:
             file_path (str): path to .models.json.
         """
-        with open(file_path, "r", encoding="utf-8") as json_file:
-            self.models_dict = json.load(json_file)
-
-    def add_cs_api_models(self, model_list: List[str]):
-        """Add list of Coqui Studio model names that are returned from the api
-
-        Each has the following format `<coqui_studio_model>/en/<speaker_name>/<coqui_studio_model>`
-        """
-
-        def _add_model(model_name: str):
-            if not "coqui_studio" in model_name:
-                return
-            model_type, lang, dataset, model = model_name.split("/")
-            if model_type not in self.models_dict:
-                self.models_dict[model_type] = {}
-            if lang not in self.models_dict[model_type]:
-                self.models_dict[model_type][lang] = {}
-            if dataset not in self.models_dict[model_type][lang]:
-                self.models_dict[model_type][lang][dataset] = {}
-            if model not in self.models_dict[model_type][lang][dataset]:
-                self.models_dict[model_type][lang][dataset][model] = {}
-
-        for model_name in model_list:
-            _add_model(model_name)
+        self.models_dict = read_json_with_comments(file_path)
 
     def _list_models(self, model_type, model_count=0):
         if self.verbose:
@@ -109,7 +88,6 @@ class ModelManager(object):
     def _list_for_model_type(self, model_type):
         models_name_list = []
         model_count = 1
-        model_type = "tts_models"
         models_name_list.extend(self._list_models(model_type, model_count))
         return models_name_list
 
@@ -275,13 +253,15 @@ class ModelManager(object):
             model_item["model_url"] = model_item["hf_url"]
         elif "fairseq" in model_item["model_name"]:
             model_item["model_url"] = "https://coqui.gateway.scarf.sh/fairseq/"
+        elif "xtts" in model_item["model_name"]:
+            model_item["model_url"] = "https://coqui.gateway.scarf.sh/xtts/"
         return model_item
 
     def _set_model_item(self, model_name):
         # fetch model info from the dict
-        model_type, lang, dataset, model = model_name.split("/")
-        model_full_name = f"{model_type}--{lang}--{dataset}--{model}"
         if "fairseq" in model_name:
+            model_type = "tts_models"
+            lang = model_name.split("/")[1]
             model_item = {
                 "model_type": "tts_models",
                 "license": "CC BY-NC 4.0",
@@ -290,30 +270,58 @@ class ModelManager(object):
                 "description": "this model is released by Meta under Fairseq repo. Visit https://github.com/facebookresearch/fairseq/tree/main/examples/mms for more info.",
             }
             model_item["model_name"] = model_name
+        elif "xtts" in model_name and len(model_name.split("/")) != 4:
+            # loading xtts models with only model name (e.g. xtts_v2.0.2)
+            # check model name has the version number with regex
+            version_regex = r"v\d+\.\d+\.\d+"
+            if re.search(version_regex, model_name):
+                model_version = model_name.split("_")[-1]
+            else:
+                model_version = "main"
+            model_type = "tts_models"
+            lang = "multilingual"
+            dataset = "multi-dataset"
+            model = model_name
+            model_item = {
+                "default_vocoder": None,
+                "license": "CPML",
+                "contact": "info@coqui.ai",
+                "tos_required": True,
+                "hf_url": [
+                    f"https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/{model_version}/model.pth",
+                    f"https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/{model_version}/config.json",
+                    f"https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/{model_version}/vocab.json",
+                    f"https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/{model_version}/hash.md5",
+                    f"https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/{model_version}/speakers_xtts.pth",
+                ],
+            }
         else:
             # get model from models.json
+            model_type, lang, dataset, model = model_name.split("/")
             model_item = self.models_dict[model_type][lang][dataset][model]
             model_item["model_type"] = model_type
+
+        model_full_name = f"{model_type}--{lang}--{dataset}--{model}"
         md5hash = model_item["model_hash"] if "model_hash" in model_item else None
         model_item = self.set_model_url(model_item)
         return model_item, model_full_name, model, md5hash
 
-    def ask_tos(self, model_full_path):
+    @staticmethod
+    def ask_tos(model_full_path):
         """Ask the user to agree to the terms of service"""
         tos_path = os.path.join(model_full_path, "tos_agreed.txt")
-        if not os.path.exists(tos_path):
-            print(" > You must agree to the terms of service to use this model.")
-            print(" | > Please see the terms of service at https://coqui.ai/cpml.txt")
-            print(' | > "I have read, understood and agreed the Terms and Conditions." - [y/n]')
-            answer = input(" | | > ")
-            if answer.lower() == "y":
-                with open(tos_path, "w") as f:
-                    f.write("I have read, understood ad agree the Terms and Conditions.")
-                return True
-            else:
-                return False
+        print(" > You must confirm the following:")
+        print(' | > "I have purchased a commercial license from Coqui: licensing@coqui.ai"')
+        print(' | > "Otherwise, I agree to the terms of the non-commercial CPML: https://coqui.ai/cpml" - [y/n]')
+        answer = input(" | | > ")
+        if answer.lower() == "y":
+            with open(tos_path, "w", encoding="utf-8") as f:
+                f.write("I have read, understood and agreed to the Terms and Conditions.")
+            return True
+        return False
 
-    def tos_agreed(self, model_item, model_full_path):
+    @staticmethod
+    def tos_agreed(model_item, model_full_path):
         """Check if the user has agreed to the terms of service"""
         if "tos_required" in model_item and model_item["tos_required"]:
             tos_path = os.path.join(model_full_path, "tos_agreed.txt")
@@ -392,7 +400,7 @@ class ModelManager(object):
                     self.create_dir_and_download_model(model_name, model_item, output_path)
             # if the configs are different, redownload it
             # ToDo: we need a better way to handle it
-            if "xtts_v1" in model_name:
+            if "xtts" in model_name:
                 try:
                     self.check_if_configs_are_equal(model_name, model_item, output_path)
                 except:
@@ -406,7 +414,7 @@ class ModelManager(object):
         output_model_path = output_path
         output_config_path = None
         if (
-            model not in ["tortoise-v2", "bark", "xtts_v1", "xtts_v1.1"] and "fairseq" not in model_name
+            model not in ["tortoise-v2", "bark"] and "fairseq" not in model_name and "xtts" not in model_name
         ):  # TODO:This is stupid but don't care for now.
             output_model_path, output_config_path = self._find_files(output_path)
         # update paths in the config.json
@@ -526,12 +534,12 @@ class ModelManager(object):
             total_size_in_bytes = int(r.headers.get("content-length", 0))
             block_size = 1024  # 1 Kibibyte
             if progress_bar:
-                progress_bar = tqdm(total=total_size_in_bytes, unit="iB", unit_scale=True)
+                ModelManager.tqdm_progress = tqdm(total=total_size_in_bytes, unit="iB", unit_scale=True)
             temp_zip_name = os.path.join(output_folder, file_url.split("/")[-1])
             with open(temp_zip_name, "wb") as file:
                 for data in r.iter_content(block_size):
                     if progress_bar:
-                        progress_bar.update(len(data))
+                        ModelManager.tqdm_progress.update(len(data))
                     file.write(data)
             with zipfile.ZipFile(temp_zip_name) as z:
                 z.extractall(output_folder)
@@ -561,12 +569,12 @@ class ModelManager(object):
             total_size_in_bytes = int(r.headers.get("content-length", 0))
             block_size = 1024  # 1 Kibibyte
             if progress_bar:
-                progress_bar = tqdm(total=total_size_in_bytes, unit="iB", unit_scale=True)
+                ModelManager.tqdm_progress = tqdm(total=total_size_in_bytes, unit="iB", unit_scale=True)
             temp_tar_name = os.path.join(output_folder, file_url.split("/")[-1])
             with open(temp_tar_name, "wb") as file:
                 for data in r.iter_content(block_size):
                     if progress_bar:
-                        progress_bar.update(len(data))
+                        ModelManager.tqdm_progress.update(len(data))
                     file.write(data)
             with tarfile.open(temp_tar_name) as t:
                 t.extractall(output_folder)
@@ -597,10 +605,10 @@ class ModelManager(object):
             block_size = 1024  # 1 Kibibyte
             with open(temp_zip_name, "wb") as file:
                 if progress_bar:
-                    progress_bar = tqdm(total=total_size_in_bytes, unit="iB", unit_scale=True)
+                    ModelManager.tqdm_progress = tqdm(total=total_size_in_bytes, unit="iB", unit_scale=True)
                 for data in r.iter_content(block_size):
                     if progress_bar:
-                        progress_bar.update(len(data))
+                        ModelManager.tqdm_progress.update(len(data))
                     file.write(data)
 
     @staticmethod

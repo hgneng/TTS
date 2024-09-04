@@ -66,12 +66,6 @@ If you don't specify any models, then it uses LJSpeech based English model.
   $ tts --text "Text for TTS" --pipe_out --out_path output/path/speech.wav | aplay
   ```
 
-- Run TTS and define speed factor to use for 🐸Coqui Studio models, between 0.0 and 2.0:
-
-  ```
-  $ tts --text "Text for TTS" --model_name "coqui_studio/<language>/<dataset>/<model_name>" --speed 1.2 --out_path output/path/speech.wav
-  ```
-
 - Run a TTS model with its default vocoder model:
 
   ```
@@ -222,25 +216,6 @@ def main():
         default=None,
     )
     parser.add_argument("--encoder_config_path", type=str, help="Path to speaker encoder config file.", default=None)
-
-    # args for coqui studio
-    parser.add_argument(
-        "--cs_model",
-        type=str,
-        help="Name of the 🐸Coqui Studio model. Available models are `XTTS`, `XTTS-multilingual`, `V1`.",
-    )
-    parser.add_argument(
-        "--emotion",
-        type=str,
-        help="Emotion to condition the model with. Only available for 🐸Coqui Studio `V1` model.",
-        default=None,
-    )
-    parser.add_argument(
-        "--language",
-        type=str,
-        help="Language to condition the model with. Only available for 🐸Coqui Studio `XTTS-multilingual` model.",
-        default=None,
-    )
     parser.add_argument(
         "--pipe_out",
         help="stdout the generated TTS wav file for shell pipe.",
@@ -249,13 +224,7 @@ def main():
         const=True,
         default=False,
     )
-    parser.add_argument(
-        "--speed",
-        type=float,
-        help="Speed factor to use for 🐸Coqui Studio models, between 0.0 and 2.0.",
-        default=None,
-    )
-
+    
     # args for multi-speaker synthesis
     parser.add_argument("--speakers_file_path", type=str, help="JSON file for multi-speaker model.", default=None)
     parser.add_argument("--language_ids_file_path", type=str, help="JSON file for multi-lingual model.", default=None)
@@ -389,7 +358,6 @@ def main():
 
         # CASE1 #list : list pre-trained TTS models
         if args.list_models:
-            manager.add_cs_api_models(api.list_models())
             manager.list_models()
             sys.exit()
 
@@ -404,22 +372,7 @@ def main():
             manager.model_info_by_full_name(model_query_full_name)
             sys.exit()
 
-        # CASE3: TTS with coqui studio models
-        if "coqui_studio" in args.model_name:
-            print(" > Using 🐸Coqui Studio model: ", args.model_name)
-            api = TTS(model_name=args.model_name, cs_api_model=args.cs_model)
-            api.tts_to_file(
-                text=args.text,
-                emotion=args.emotion,
-                file_path=args.out_path,
-                language=args.language,
-                speed=args.speed,
-                pipe_out=pipe_out,
-            )
-            print(" > Saving output to ", args.out_path)
-            return
-
-        # CASE4: load pre-trained model paths
+        # CASE3: load pre-trained model paths
         if args.model_name is not None and not args.model_path:
             model_path, config_path, model_item = manager.download_model(args.model_name)
             # tts model
@@ -427,7 +380,9 @@ def main():
                 tts_path = model_path
                 tts_config_path = config_path
                 if "default_vocoder" in model_item:
-                    args.vocoder_name = model_item["default_vocoder"] if args.vocoder_name is None else args.vocoder_name
+                    args.vocoder_name = (
+                        model_item["default_vocoder"] if args.vocoder_name is None else args.vocoder_name
+                    )
 
             # voice conversion model
             if model_item["model_type"] == "voice_conversion_models":
@@ -445,7 +400,7 @@ def main():
         if args.vocoder_name is not None and not args.vocoder_path:
             vocoder_path, vocoder_config_path, _ = manager.download_model(args.vocoder_name)
 
-        # CASE5: set custom model paths
+        # CASE4: set custom model paths
         if args.model_path is not None:
             tts_path = args.model_path
             tts_config_path = args.config_path

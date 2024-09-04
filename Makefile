@@ -22,6 +22,9 @@ test_tts:	## run tts tests.
 test_tts2:	## run tts tests.
 	nose2 -F -v -B --with-coverage --coverage TTS tests.tts_tests2
 
+test_xtts:
+	nose2 -F -v -B --with-coverage --coverage TTS tests.xtts_tests
+
 test_aux:	## run aux tests.
 	nose2 -F -v -B --with-coverage --coverage TTS tests.aux_tests
 	./run_bash_tests.sh
@@ -31,9 +34,6 @@ test_zoo:	## run zoo tests.
 
 inference_tests: ## run inference tests.
 	nose2 -F -v -B --with-coverage --coverage TTS tests.inference_tests
-
-api_tests: ## run api tests.
-	nose2 -F -v -B --with-coverage --coverage TTS tests.api_tests
 
 data_tests: ## run data tests.
 	nose2 -F -v -B --with-coverage --coverage TTS tests.data_tests
