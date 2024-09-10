@@ -1,6 +1,6 @@
 from typing import Dict
 import sys
-sys.path.append('/home/hgneng/code/hgneng/TTS')
+#sys.path.append('/home/hgneng/code/hgneng/TTS')
 from TTS.tts.utils.text.cantonese.phonemizer import cantonese_text_to_phonemes
 from TTS.tts.utils.text.phonemizers.base import BasePhonemizer
 
@@ -49,13 +49,16 @@ class YUE_CN_Phonemizer(BasePhonemizer):
     def is_available(self) -> bool:
         return True
 
-
-if __name__ == "__main__":
-    text = "这是，样本中文。"
-    e = YUE_CN_Phonemizer()
-    print(e.supported_languages())
-    print(e.version())
-    print(e.language)
-    print(e.name())
-    print(e.is_available())
-    print("`" + e.phonemize(text) + "`")
+# import opencc
+# if __name__ == "__main__":
+#     text = "这是，样本中文。"
+#     converter = opencc.OpenCC('s2t')
+#     text = converter.convert(text)
+#     #text = "這是，樣本中文。"
+#     e = YUE_CN_Phonemizer()
+#     print(e.supported_languages())
+#     print(e.version())
+#     print(e.language)
+#     print(e.name())
+#     print(e.is_available())
+#     print("`" + e.phonemize(text) + "`")
