@@ -613,6 +613,32 @@ def baker(root_path: str, meta_file: str, **kwargs) -> List[List[str]]:  # pylin
             items.append({"text": text, "audio_file": wav_path, "speaker_name": speaker_name, "root_path": root_path})
     return items
 
+def mdcc(root_path: str, meta_file: str, **kwargs) -> List[List[str]]:  # pylint: disable=unused-argument
+    """Normalizes the MDCC meta data file to TTS format
+
+    Args:
+        root_path (str): path to the mdcc dataset
+        meta_file (str): name of the meta dataset containing names of wav to select and the transcript of the sentence
+    Returns:
+        List[List[str]]: List of (text, wav_path, speaker_name) associated with each sentences
+    """
+    txt_file = os.path.join(root_path, meta_file)
+    items = []
+    speaker_name = "baker"
+    with open(txt_file, "r", encoding="utf-8") as ttf:
+        for line in ttf:
+            audioFile, textFile, sex, duration = line.rstrip("\n").split(",")
+            audioPath = os.path.join(root_path, audioFile)
+
+            textPath = os.path.join(root_path, textFile)
+            if os.path.exists(textPath):
+                with open(textPath, 'r', encoding='utf-8') as file:
+                    text = file.read()
+                items.append({"text": text, "audio_file": audioPath, "speaker_name": 'unknown', "root_path": root_path})
+            else:
+                print(f"{textPath} does not exist.")
+
+    return items
 
 def kokoro(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
     """Japanese single-speaker dataset from https://github.com/kaiidams/Kokoro-Speech-Dataset"""
