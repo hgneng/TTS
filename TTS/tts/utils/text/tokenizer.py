@@ -198,6 +198,7 @@ class TTSTokenizer:
                     phonemizer = get_phonemizer_by_name(config.phonemizer, **phonemizer_kwargs)
                 else:
                     try:
+                        #print('supported languages:', DEF_LANG_TO_PHONEMIZER);
                         phonemizer = get_phonemizer_by_name(
                             DEF_LANG_TO_PHONEMIZER[config.phoneme_language], **phonemizer_kwargs
                         )
