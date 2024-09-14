@@ -114,9 +114,9 @@
         "pad": "_",
         "eos": "~",
         "bos": "^",
-        "characters": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!'(),-.:;? ",
+        "characters": "abcdefghijklmnopqrstuvwxyz123456!'(),-.:;? ",
         "punctuations": "!'(),-.:;? ",
-        "phonemes": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        "phonemes": "abcdefghijklmnopqrstuvwxyz123456"
     },
     "use_speaker_embedding": false,
     "use_gst": false,
