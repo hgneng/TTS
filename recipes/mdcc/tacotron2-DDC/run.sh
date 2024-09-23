@@ -15,13 +15,12 @@ fi
 #tail -n 812 $RUN_DIR/$CORPUS/metadata_shuf.csv > $RUN_DIR/$CORPUS/metadata_val.csv
 
 # compute dataset mean and variance for normalization
-#python TTS/bin/compute_statistics.py $RUN_DIR/tacotron2-DDC.json $RUN_DIR/scale_stats.npy --data_path $RUN_DIR/$CORPUS/audio/
+python TTS/bin/compute_statistics.py $RUN_DIR/tacotron2-DDC.json $RUN_DIR/scale_stats.npy --data_path $RUN_DIR/$CORPUS/audio/
 
 # training ....
 # change the GPU id if needed
-#CUDA_VISIBLE_DEVICES="0" python ...
-python TTS/bin/train_tts.py --config_path $RUN_DIR/tacotron2-DDC.json \
+CUDA_VISIBLE_DEVICES="0" python TTS/bin/train_tts.py --config_path $RUN_DIR/tacotron2-DDC.json \
                                                      --coqpit.output_path $RUN_DIR \
                                                      --coqpit.datasets.0.path $RUN_DIR/$CORPUS \
                                                      --coqpit.audio.stats_path $RUN_DIR/scale_stats.npy \
-                                                     --coqpit.phoneme_cache_path $RUN_DIR/phoneme_cache \
+                                                     --coqpit.phoneme_cache_path /tmp/phoneme_cache \
