@@ -32,6 +32,7 @@ def cantonese_text_to_phonemes(text: str, seperator: str = "|") -> str:
         else:
             tokens.extend(re.findall(r'[a-zA-Z]+[0-9]+', jyutpingWord))
 
-        tokens.append('')
+        if (len(tokens) < 1):
+            tokens.append('v')
 
     return seperator.join(tokens)

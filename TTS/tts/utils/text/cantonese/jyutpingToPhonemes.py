@@ -1,6 +1,7 @@
 # translated with pycantonse.jyutping_to_ipa
 # Doc: https://github.com/jacksonllee/pycantonese/issues/44
 JYUTPING_DICT = {
+    'v': ['v'], # for all unknown characters
     'aa': ['aː'],
     'aai': ['aːi'],
     'aak': ['aːk̚'],
