@@ -616,7 +616,7 @@ class PhonemeDataset(Dataset):
             os.system('cp /tmp/mdcc-dataset/cnt_asr_train_metadata.csv /tmp/mdcc-dataset/cnt_asr_train_metadata.csv.bak && grep -v "' +
                 item['audio_unique_name'][1:] + '" /tmp/mdcc-dataset/cnt_asr_train_metadata.csv.bak>/tmp/mdcc-dataset/cnt_asr_train_metadata.csv')
         else:
-            print('PhonemeDataset.__getitem__(' + index + '): ' + item['text'] + ' => ' + str(ids))
+            print('PhonemeDataset.__getitem__(' + str(index) + '): ' + item['text'] + ' => ' + str(ids))
         ph_hat = self.tokenizer.ids_to_text(ids)
         return {"text": item["text"], "ph_hat": ph_hat, "token_ids": ids, "token_ids_len": len(ids)}
 
