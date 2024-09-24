@@ -618,6 +618,7 @@ class PhonemeDataset(Dataset):
             # PhonemeDataset.__getitem__(3191): {}死喇 => [27 13 17  4 20  9  9  3]
             item = self.samples[3191]
             ids = self.compute_or_load(string2filename(item["audio_unique_name"]), item["text"], item["language"])
+            print("Replaced with " + str(item) + " => " + str(ids))
         #else:
             #print('PhonemeDataset.__getitem__(' + str(index) + '): ' + item['text'] + ' => ' + str(ids))
         ph_hat = self.tokenizer.ids_to_text(ids)
