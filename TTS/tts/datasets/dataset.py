@@ -615,7 +615,9 @@ class PhonemeDataset(Dataset):
             print("Item must be removed from metadata.csv " + str(item) + " => " + str(ids))
             os.system('cp /tmp/mdcc-dataset/cnt_asr_train_metadata.csv /tmp/mdcc-dataset/cnt_asr_train_metadata.csv.bak && grep -v "' +
                 item['audio_unique_name'][1:] + '" /tmp/mdcc-dataset/cnt_asr_train_metadata.csv.bak>/tmp/mdcc-dataset/cnt_asr_train_metadata.csv')
-            ids = self.tokenizer.text_to_ids('v', '')
+            # PhonemeDataset.__getitem__(3191): {}死喇 => [27 13 17  4 20  9  9  3]
+            item = self.samples[3191]
+            ids = self.compute_or_load(string2filename(item["audio_unique_name"]), item["text"], item["language"])
         #else:
             #print('PhonemeDataset.__getitem__(' + str(index) + '): ' + item['text'] + ' => ' + str(ids))
         ph_hat = self.tokenizer.ids_to_text(ids)
