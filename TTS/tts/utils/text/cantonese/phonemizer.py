@@ -24,7 +24,7 @@ def _cantonese_jyutping_to_phoneme(pinyin: str) -> str:
 
 def cantonese_text_to_phonemes(text: str, seperator: str = "|") -> str:
     jyutpings = pycantonese.characters_to_jyutping(text)
-    print(jyutpings)
+    #print(jyutpings)
     tokens = []
     for word in jyutpings:
         jyutpingWord = word[1]
