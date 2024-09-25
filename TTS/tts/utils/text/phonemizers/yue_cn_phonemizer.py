@@ -49,16 +49,18 @@ class YUE_CN_Phonemizer(BasePhonemizer):
     def is_available(self) -> bool:
         return True
 
-# import opencc
-# if __name__ == "__main__":
-#     text = "这是，样本中文。"
-#     converter = opencc.OpenCC('s2t')
-#     text = converter.convert(text)
-#     #text = "這是，樣本中文。"
-#     e = YUE_CN_Phonemizer()
-#     print(e.supported_languages())
-#     print(e.version())
-#     print(e.language)
-#     print(e.name())
-#     print(e.is_available())
-#     print("`" + e.phonemize(text) + "`")
+import opencc
+if __name__ == "__main__":
+    text = "English Text"
+    #text = "这是，样本中文。"
+    converter = opencc.OpenCC('s2t')
+    text = converter.convert(text)
+    print(text)
+    #text = "這是，樣本中文。"
+    e = YUE_CN_Phonemizer()
+    print(e.supported_languages())
+    print(e.version())
+    print(e.language)
+    print(e.name())
+    print(e.is_available())
+    print("`" + e.phonemize(text) + "`")

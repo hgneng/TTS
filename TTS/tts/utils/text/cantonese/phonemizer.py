@@ -24,15 +24,16 @@ def _cantonese_jyutping_to_phoneme(pinyin: str) -> str:
 
 def cantonese_text_to_phonemes(text: str, seperator: str = "|") -> str:
     jyutpings = pycantonese.characters_to_jyutping(text)
+    print(jyutpings)
     tokens = []
     for word in jyutpings:
         jyutpingWord = word[1]
         if jyutpingWord == None:
-            tokens.append('')
+            tokens.append('v')
         else:
             tokens.extend(re.findall(r'[a-zA-Z]+[0-9]+', jyutpingWord))
-
-        if (len(tokens) < 1):
-            tokens.append('v') # map unknown characters to phonemem v
+    
+    #if (len(tokens) < 1):
+    #    tokens.append('v') # map unknown characters to phonemem v
 
     return seperator.join(tokens)
