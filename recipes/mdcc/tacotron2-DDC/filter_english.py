@@ -6,6 +6,7 @@ def filter(sourceFile, targetFile):
     file = open(targetFile, mode='w', newline='')
     # Create a writer object
     writer = csv.writer(file)
+    writer.writerow(['audio_path', 'text_path', 'sex', 'duration']
 
     # Open the CSV file
     with open(sourceFile, mode='r') as file:
