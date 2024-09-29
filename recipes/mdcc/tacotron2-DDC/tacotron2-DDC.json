@@ -3,8 +3,8 @@
         {
             "formatter": "mdcc",
             "path": "mdcc-dataset",
-            "meta_file_train": "cnt_asr_train_metadata.csv",
-            "meta_file_val": "cnt_asr_valid_metadata.csv"
+            "meta_file_train": "train.csv",
+            "meta_file_val": "valid.csv"
         }
     ],
     "audio": {
