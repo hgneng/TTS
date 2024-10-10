@@ -48,7 +48,6 @@ bnnumerizer
 bnunicodenormalizer
 #deps for tortoise
 einops>=0.6.0
-transformers>=4.33.0
 #deps for bark
 encodec>=0.1.1
 # deps for XTTS
@@ -57,3 +56,4 @@ num2words
 spacy[ja]>=3
 pycantonese
 opencc
+transformers #>=4.33.0
