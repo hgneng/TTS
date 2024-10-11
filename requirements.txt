@@ -50,17 +50,18 @@ pypinyin
 #hangul_romanize
 
 # gruut+supported langs
+gruut
 #gruut[de,es,fr]==2.2.3
 
 # deps for korean
-#jamo
-#nltk
-#g2pkk>=0.1.1
+jamo
+nltk
+g2pkk>=0.1.1
 
 # deps for bangla
-#bangla
-#bnnumerizer
-#bnunicodenormalizer
+bangla
+bnnumerizer
+bnunicodenormalizer
 
 #deps for tortoise
 #einops>=0.6.0
