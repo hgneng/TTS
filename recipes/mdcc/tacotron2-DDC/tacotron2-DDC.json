@@ -86,7 +86,7 @@
     "attention_heads": 4,
     "attention_norm": "sigmoid",
     "r": 7,
-    "gradual_training": [[0, 7, 64], [1, 5, 64], [50000, 3, 32], [130000, 2, 32], [290000, 1, 32]],
+    //"gradual_training": [[0, 7, 64], [1, 5, 64], [50000, 3, 32], [130000, 2, 32], [290000, 1, 32]],
     "stopnet": true,
     "separate_stopnet": true,
     "print_step": 25,
