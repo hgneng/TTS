@@ -212,9 +212,9 @@ class BaseTTS(BaseTrainerModel):
                 durations[idx, : text_lengths[idx]] = dur
 
         # set stop targets wrt reduction factor
-        print('[cameron debug] text_input:', text_input.shape)
-        print('[cameron debug] stop_targets:', stop_targets.size())
-        print('[cameron debug] self.config.r:', self.config.r)
+        #print('[cameron debug] text_input:', text_input.shape)
+        #print('[cameron debug] stop_targets:', stop_targets.size())
+        #print('[cameron debug] self.config.r:', self.config.r)
         stop_targets = stop_targets.view(text_input.shape[0], stop_targets.size(1) // self.config.r, -1)
         stop_targets = (stop_targets.sum(2) > 0.0).unsqueeze(2).float().squeeze(2)
         stop_target_lengths = torch.divide(mel_lengths, self.config.r).ceil_()
