@@ -44,8 +44,8 @@
     "model": "Tacotron2",
     "run_name": "mdcc-ddc",
     "run_description": "tacotron2 with DDC and differential spectral loss.",
-    "batch_size": 32,
-    "eval_batch_size": 16,
+    "batch_size": 64, //32,
+    "eval_batch_size": 64, //16,
     "mixed_precision": true,
     "distributed": {
         "backend": "nccl",
