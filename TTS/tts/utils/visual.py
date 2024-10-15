@@ -11,7 +11,7 @@ matplotlib.use("Agg")
 def plot_alignment(alignment, info=None, fig_size=(16, 10), title=None, output_fig=False, plot_log=False):
     print('[cameron debug] plot_alignment: ', alignment)
     if isinstance(alignment, torch.Tensor):
-        alignment_ = alignment.detach().cpu().numpy().squeeze()
+        alignment_ = alignment.detach().cpu().numpy().squeeze(axis=0)
         print('[cameron debug] alignment.detach().cpu().numpy().squeeze(): ', alignment_)
     else:
         alignment_ = alignment
