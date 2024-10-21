@@ -99,7 +99,21 @@ def sample_wise_min_max(x: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
     """
     maximum = torch.amax(x.masked_fill(~mask, 0), dim=(1, 2), keepdim=True)
     minimum = torch.amin(x.masked_fill(~mask, np.inf), dim=(1, 2), keepdim=True)
-    return (x - minimum) / (maximum - minimum + 1e-8)
+    #return (x - minimum) / (maximum - minimum + 1e-8)
+
+    # https://github.com/coqui-ai/TTS/issues/2398
+    # Handle case where max == min to avoid division by zero
+    range_vals = maximum - minimum
+    
+    # If max == min, we set range to a small positive value to avoid NaN
+    eps = 1e-8
+    range_vals = torch.where(range_vals == 0, torch.tensor(eps, device=x.device), range_vals)
+    
+    # Perform normalization
+    normalized = (x - minimum) / range_vals
+
+    # Apply the mask again to ensure masked regions stay unaffected
+    return normalized * mask
 
 
 class SSIMLoss(torch.nn.Module):
