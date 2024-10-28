@@ -19,8 +19,10 @@ fi
 
 # training ....
 # change the GPU id if needed
-CUDA_VISIBLE_DEVICES="0" python TTS/bin/train_tts.py --config_path $RUN_DIR/tacotron2-DDC.json \
-                                                     --coqpit.output_path $RUN_DIR \
-                                                     --coqpit.datasets.0.path $RUN_DIR/$CORPUS \
-                                                     --coqpit.audio.stats_path $RUN_DIR/scale_stats.npy \
-                                                     --coqpit.phoneme_cache_path /tmp/phoneme_cache \
+CUDA_VISIBLE_DEVICES="0" python TTS/bin/train_tts.py \
+    --config_path $RUN_DIR/tacotron2-DDC.json \
+    --restore_path $RUN_DIR/best_model.pth \
+    --coqpit.output_path $RUN_DIR \
+    --coqpit.datasets.0.path $RUN_DIR/$CORPUS \
+    --coqpit.audio.stats_path $RUN_DIR/scale_stats.npy \
+    --coqpit.phoneme_cache_path /tmp/phoneme_cache \
