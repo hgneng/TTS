@@ -108,13 +108,14 @@
     "use_noise_augment": true,
     "output_path": "output",
     "phoneme_cache_path": "cache",
-    "use_phonemes": true,
+    "use_phonemes": false, //true,
     "phoneme_language": "yue-cn",
+    //"phonemizer": "espeak",
     "characters": {
         "pad": "_",
         "eos": "~",
         "bos": "^",
-        "characters": "abcdefghijklmnopqrstuvwxyz123456!'(),-.:;? ",
+        "characters": "abcdefghijklmnopqrstuvwxyz123456", //!'(),-.:;? ",
         "punctuations": "!'(),-.:;? ",
         "phonemes": "abcdefghijklmnopqrstuvwxyz123456"
     },
