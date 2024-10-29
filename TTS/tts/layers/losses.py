@@ -143,6 +143,9 @@ class SSIMLoss(torch.nn.Module):
         mask = sequence_mask(sequence_length=length, max_len=y.size(1)).unsqueeze(2)
         y_norm = sample_wise_min_max(y, mask)
         y_hat_norm = sample_wise_min_max(y_hat, mask)
+        assert not torch.isnan(mask).any(), "mask contains NaNs"
+        assert not torch.isnan(y_norm).any(), "y_norm contains NaNs"
+        assert not torch.isnan(y_hat_norm).any(), "y_hat_norm contains NaNs"
         ssim_loss = self.loss_func((y_norm * mask).unsqueeze(1), (y_hat_norm * mask).unsqueeze(1))
 
         if ssim_loss.item() > 1.0:
