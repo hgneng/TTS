@@ -113,7 +113,14 @@ def sample_wise_min_max(x: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
     normalized = (x - minimum) / range_vals
 
     # Apply the mask again to ensure masked regions stay unaffected
-    return normalized * mask
+    result = normalized * mask
+    
+    # 再次检查结果是否包含 NaN
+    if torch.isnan(result).any():
+        print("Warning: Result contains NaN values. Returning zero tensor.")
+        return torch.zeros_like(result)
+
+    return result
 
 
 class SSIMLoss(torch.nn.Module):
