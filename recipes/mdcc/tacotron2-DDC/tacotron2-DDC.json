@@ -108,7 +108,7 @@
     "use_noise_augment": true,
     "output_path": "output",
     "phoneme_cache_path": "cache",
-    "use_phonemes": false, //true,
+    "use_phonemes": true,
     "phoneme_language": "yue-cn",
     //"phonemizer": "espeak",
     "characters": {
