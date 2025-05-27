@@ -78,19 +78,27 @@ class XTTSDataset(torch.utils.data.Dataset):
 
     def check_eval_samples(self):
         print(" > Filtering invalid eval samples!!")
+        print(" > Total eval samples before filtering:", len(self.samples))
         new_samples = []
         for sample in self.samples:
             try:
                 tseq, _, wav, _, _, _ = self.load_item(sample)
             except:
+                print("fail to load a sample")
                 continue
             # Basically, this audio file is nonexistent or too long to be supported by the dataset.
-            if (
-                wav is None
-                or (self.max_wav_len is not None and wav.shape[-1] > self.max_wav_len)
-                or (self.max_text_len is not None and tseq.shape[0] > self.max_text_len)
-            ):
+            if (wav is None):
+                print("wav is none")
                 continue
+            
+            if (self.max_wav_len is not None and wav.shape[-1] > self.max_wav_len):
+                print("wav is too long")
+                continue
+
+            if (self.max_text_len is not None and tseq.shape[0] > self.max_text_len):
+                print("text is too long")
+                continue
+            
             new_samples.append(sample)
         self.samples = new_samples
         print(" > Total eval samples after filtering:", len(self.samples))

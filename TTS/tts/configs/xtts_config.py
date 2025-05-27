@@ -85,6 +85,7 @@ class XttsConfig(BaseTTSConfig):
             "cs",
             "ar",
             "zh-cn",
+            "zh-yue",
             "hu",
             "ko",
             "ja",

@@ -28,7 +28,7 @@ config_dataset = BaseDatasetConfig(
     formatter="mdcc",
     dataset_name="mdcc",
     path="mdcc-dataset/",
-    meta_file_train="mdcc-dataset/cnt_asr_train_metadata.csv",
+    meta_file_train="cnt_asr_train_metadata.csv",
     language="zh-yue",
 )
 
@@ -75,7 +75,7 @@ if not os.path.isfile(TOKENIZER_FILE) or not os.path.isfile(XTTS_CHECKPOINT):
 # Training sentences generations
 SPEAKER_REFERENCE = [
 #    "./tests/data/ljspeech/wavs/LJ001-0002.wav"  # speaker reference to be used in training test sentences
-    "mdcc-dataset/audio/447_1705221219_14999_1008.98_1012.92.wav"
+    "audio/447_1705221219_14999_1008.98_1012.92.wav"
 ]
 LANGUAGE = config_dataset.language
 
