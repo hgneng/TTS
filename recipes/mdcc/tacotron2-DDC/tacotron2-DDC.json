@@ -13,7 +13,7 @@
         "hop_length": 256,
         "frame_length_ms": null,
         "frame_shift_ms": null,
-        "sample_rate": 22050,
+        "sample_rate": 16000,
         "preemphasis": 0.0,
         "ref_level_db": 20,
         "do_trim_silence": true,
@@ -22,7 +22,7 @@
         "griffin_lim_iters": 60,
         "num_mels": 80,
         "mel_fmin": 50.0,
-        "mel_fmax": 7600.0,
+        "mel_fmax": 8500.0,
         "spec_gain": 1,
         "signal_norm": true,
         "min_level_db": -100,
@@ -33,9 +33,6 @@
     },
     "gst":{
         "gst_style_input": null,
-
-
-
         "gst_embedding_dim": 512,
         "gst_num_heads": 4,
         "gst_style_tokens": 10,
@@ -64,7 +61,7 @@
     "run_eval": true,
     "test_delay_epochs": 10,
     "test_sentences_file": null,
-    "noam_schedule": false,
+    "noam_schedule": true, // false,
     "grad_clip": 1.0,
     "epochs": 1000,
     "lr": 0.0001,
