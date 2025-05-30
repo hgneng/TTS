@@ -61,7 +61,9 @@ XTTS_CHECKPOINT_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/mod
 
 # XTTS transfer learning parameters: You we need to provide the paths of XTTS model checkpoint that you want to do the fine tuning.
 TOKENIZER_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(TOKENIZER_FILE_LINK))  # vocab.json file
-XTTS_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CHECKPOINT_LINK))  # model.pth file
+#XTTS_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CHECKPOINT_LINK))  # model.pth file
+XTTS_CHECKPOINT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "checkpoint.pth")
+print("checkpoint path: ", XTTS_CHECKPOINT)
 
 # download XTTS v2.0 files if needed
 if not os.path.isfile(TOKENIZER_FILE) or not os.path.isfile(XTTS_CHECKPOINT):
@@ -75,7 +77,7 @@ if not os.path.isfile(TOKENIZER_FILE) or not os.path.isfile(XTTS_CHECKPOINT):
 # Training sentences generations
 SPEAKER_REFERENCE = [
 #    "./tests/data/ljspeech/wavs/LJ001-0002.wav"  # speaker reference to be used in training test sentences
-    "audio/447_1705221219_14999_1008.98_1012.92.wav"
+    "mdcc-dataset/audio/447_1705221219_14999_1008.98_1012.92.wav"
 ]
 LANGUAGE = config_dataset.language
 
