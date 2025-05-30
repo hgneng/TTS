@@ -210,7 +210,7 @@ class Xtts(BaseTTS):
         self.models_dir = config.model_dir
         self.gpt_batch_size = self.args.gpt_batch_size
 
-        self.tokenizer = VoiceBpeTokenizer()
+        self.tokenizer = VoiceBpeTokenizer(config.model_args.tokenizer_file)
         self.gpt = None
         self.init_models()
         self.register_buffer("mel_stats", torch.ones(80))

@@ -19,7 +19,7 @@ from TTS.tts.layers.xtts.zh_num2words import TextNorm as zh_num2words
 
 
 def get_spacy_lang(lang):
-    if lang == "zh":
+    if lang == "zh" or lang == "zh-yue":
         return Chinese()
     elif lang == "ja":
         return Japanese()
@@ -172,6 +172,12 @@ _abbreviations = {
         ]
     ],
     "zh": [
+        (re.compile("\\b%s\\." % x[0], re.IGNORECASE), x[1])
+        for x in [
+            # Chinese doesn't typically use abbreviations in the same way as Latin-based scripts.
+        ]
+    ],
+    "zh-yue": [
         (re.compile("\\b%s\\." % x[0], re.IGNORECASE), x[1])
         for x in [
             # Chinese doesn't typically use abbreviations in the same way as Latin-based scripts.
@@ -337,6 +343,19 @@ _symbols_multilingual = {
         ]
     ],
     "zh": [
+        # Chinese
+        (re.compile(r"%s" % re.escape(x[0]), re.IGNORECASE), x[1])
+        for x in [
+            ("&", " 和 "),
+            ("@", " 在 "),
+            ("%", " 百分之 "),
+            ("#", " 号 "),
+            ("$", " 美元 "),
+            ("£", " 英镑 "),
+            ("°", " 度 "),
+        ]
+    ],
+    "zh-yue": [
         # Chinese
         (re.compile(r"%s" % re.escape(x[0]), re.IGNORECASE), x[1])
         for x in [
@@ -520,7 +539,7 @@ def _expand_number(m, lang="en"):
 
 
 def expand_numbers_multilingual(text, lang="en"):
-    if lang == "zh":
+    if lang == "zh" or lang == "zh-yue":
         text = zh_num2words()(text)
     else:
         if lang in ["en", "ru"]:
@@ -594,6 +613,9 @@ class VoiceBpeTokenizer:
         self.tokenizer = None
         if vocab_file is not None:
             self.tokenizer = Tokenizer.from_file(vocab_file)
+            print("init tokenizer from ", vocab_file)
+        else:
+            print("vocab_file not provided! default path is: ", DEFAULT_VOCAB_FILE)
         self.char_limits = {
             "en": 250,
             "de": 253,
@@ -603,6 +625,7 @@ class VoiceBpeTokenizer:
             "pt": 203,
             "pl": 224,
             "zh": 82,
+            "zh-yue": 82,
             "ar": 166,
             "cs": 186,
             "ru": 182,
@@ -628,9 +651,9 @@ class VoiceBpeTokenizer:
             )
 
     def preprocess_text(self, txt, lang):
-        if lang in {"ar", "cs", "de", "en", "es", "fr", "hu", "it", "nl", "pl", "pt", "ru", "tr", "zh", "ko"}:
+        if lang in {"ar", "cs", "de", "en", "es", "fr", "hu", "it", "nl", "pl", "pt", "ru", "tr", "zh", "zh-yue", "ko"}:
             txt = multilingual_cleaners(txt, lang)
-            if lang == "zh":
+            if lang == "zh" or lang == "zh-yue":
                 txt = chinese_transliterate(txt)
             if lang == "ko":
                 txt = korean_transliterate(txt)
