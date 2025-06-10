@@ -6,7 +6,7 @@ from trainer import Trainer, TrainerArgs
 
 # GlowTTSConfig: all model related values for training, validating and testing.
 from TTS.tts.configs.glow_tts_config import GlowTTSConfig
-
+from TTS.tts.configs.shared_configs import CharactersConfig
 # BaseDatasetConfig: defines name, formatter and path of the dataset.
 from TTS.tts.configs.shared_configs import BaseDatasetConfig
 from TTS.tts.datasets import load_tts_samples
@@ -18,10 +18,14 @@ from TTS.utils.audio import AudioProcessor
 output_path = os.path.dirname(os.path.abspath(__file__))
 
 # DEFINE DATASET CONFIG
-# Set LJSpeech as our target dataset and define its path.
 # You can also use a simple Dict to define the dataset and pass it to your custom formatter.
 dataset_config = BaseDatasetConfig(
-    formatter="ljspeech", meta_file_train="metadata.csv", path=os.path.join(output_path, "../LJSpeech-1.1/")
+    formatter="mdcc",
+    dataset_name="mdcc",
+    path="mdcc-dataset/",
+    meta_file_train="cnt_asr_train_metadata.csv",
+    meta_file_val="cnt_asr_valid_metadata.csv",
+    language="yue-cn",
 )
 
 # INITIALIZE THE TRAINING CONFIGURATION
@@ -36,10 +40,19 @@ config = GlowTTSConfig(
     epochs=1000,
     text_cleaner="phoneme_cleaners",
     use_phonemes=True,
-    phoneme_language="en-us",
+    phoneme_language="yue-cn",
+    characters=CharactersConfig(
+        pad="_",
+        eos="~",
+        bos="^",
+        characters="abcdefghijklmnopqrstuvwxyz123456",
+        punctuations="!'(),-.:;? ！？｡。，、；：「」『』（）〔〕【】—…–～《》〈〉",
+        phonemes="abcdefghijklmnopqrstuvwxyz123456"
+    ),
+    #use_eos_bos=True,
     phoneme_cache_path=os.path.join(output_path, "phoneme_cache"),
     print_step=25,
-    print_eval=False,
+    print_eval=True,
     mixed_precision=True,
     output_path=output_path,
     datasets=[dataset_config],
@@ -66,6 +79,9 @@ train_samples, eval_samples = load_tts_samples(
     eval_split_max_size=config.eval_split_max_size,
     eval_split_size=config.eval_split_size,
 )
+print(f"训练样本数: {len(train_samples)}")
+print(f"验证样本数: {len(eval_samples)}")
+print(f"示例: {train_samples[0]}")
 
 # INITIALIZE THE MODEL
 # Models take a config object and a speaker manager as input

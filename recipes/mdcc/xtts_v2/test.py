@@ -13,7 +13,7 @@ model.load_checkpoint(config, checkpoint_dir="./")
 #model.cuda()
 
 print("Computing speaker latents...")
-gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(audio_path=["andy.wav"])
+gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(audio_path=["female.wav"])
 
 print("Inference...")
 out = model.inference(

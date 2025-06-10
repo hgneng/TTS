@@ -635,7 +635,7 @@ def mdcc(root_path: str, meta_file: str, **kwargs) -> List[List[str]]:  # pylint
                 with open(textPath, 'r', encoding='utf-8') as file:
                     text = file.read()
                 items.append({"text": text, "audio_file": audioPath, "speaker_name": 'unknown', "root_path": root_path})
-            else:
+            elif (textFile != "text_path"):
                 print(f"{textPath} does not exist.")
 
     return items
