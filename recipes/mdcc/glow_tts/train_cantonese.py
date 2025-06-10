@@ -3,7 +3,7 @@ import os
 # Trainer: Where the ✨️ happens.
 # TrainingArgs: Defines the set of arguments of the Trainer.
 from trainer import Trainer, TrainerArgs
-
+from dataclasses import dataclass, field
 # GlowTTSConfig: all model related values for training, validating and testing.
 from TTS.tts.configs.glow_tts_config import GlowTTSConfig
 from TTS.tts.configs.shared_configs import CharactersConfig
