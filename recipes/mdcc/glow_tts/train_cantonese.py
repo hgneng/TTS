@@ -56,6 +56,12 @@ config = GlowTTSConfig(
     mixed_precision=True,
     output_path=output_path,
     datasets=[dataset_config],
+    test_sentences=field(
+        default_factory=lambda: [
+            "我挥一挥衣袖，不带走一片云彩。",
+            "我不知道这些测试句子有什么用。",
+        ]
+    )
 )
 
 # INITIALIZE THE AUDIO PROCESSOR
