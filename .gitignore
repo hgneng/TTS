@@ -131,7 +131,7 @@ recipes/WIP/*
 recipes/ljspeech/LJSpeech-1.1/*
 recipes/vctk/VCTK/*
 recipes/**/*.npy
-recipes/**/*.json
+#recipes/**/*.json
 VCTK-Corpus-removed-silence/*
 
 # ignore training logs

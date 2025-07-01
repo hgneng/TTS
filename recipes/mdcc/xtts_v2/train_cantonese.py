@@ -28,7 +28,7 @@ config_dataset = BaseDatasetConfig(
     formatter="mdcc",
     dataset_name="mdcc",
     path="mdcc-dataset/",
-    meta_file_train="cnt_asr_train_metadata.csv",
+    meta_file_train="cnt_asr_metadata_full.csv",
     language="zh-yue",
 )
 
@@ -56,11 +56,12 @@ if not os.path.isfile(DVAE_CHECKPOINT) or not os.path.isfile(MEL_NORM_FILE):
 
 
 # Download XTTS v2.0 checkpoint if needed
-TOKENIZER_FILE_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/vocab.json"
+#TOKENIZER_FILE_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/vocab.json"
 XTTS_CHECKPOINT_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/model.pth"
 
 # XTTS transfer learning parameters: You we need to provide the paths of XTTS model checkpoint that you want to do the fine tuning.
-TOKENIZER_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(TOKENIZER_FILE_LINK))  # vocab.json file
+#TOKENIZER_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(TOKENIZER_FILE_LINK))  # vocab.json file
+TOKENIZER_FILE = 'vocab-yue.json'
 #XTTS_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CHECKPOINT_LINK))  # model.pth file
 XTTS_CHECKPOINT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "checkpoint.pth")
 print("checkpoint path: ", XTTS_CHECKPOINT)
