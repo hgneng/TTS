@@ -28,7 +28,8 @@ config_dataset = BaseDatasetConfig(
     formatter="mdcc",
     dataset_name="mdcc",
     path="mdcc-dataset/",
-    meta_file_train="cnt_asr_metadata_full.csv",
+    meta_file_train="cnt_asr_train_metadata.csv",
+    meta_file_val="cnt_asr_valid_metadata.csv",
     language="zh-yue",
 )
 
@@ -61,7 +62,8 @@ XTTS_CHECKPOINT_LINK = "https://coqui.gateway.scarf.sh/hf-coqui/XTTS-v2/main/mod
 
 # XTTS transfer learning parameters: You we need to provide the paths of XTTS model checkpoint that you want to do the fine tuning.
 #TOKENIZER_FILE = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(TOKENIZER_FILE_LINK))  # vocab.json file
-TOKENIZER_FILE = 'vocab-yue.json'
+TOKENIZER_FILE = 'vocab.json'
+#TOKENIZER_FILE = 'vocab-yue.json'
 #XTTS_CHECKPOINT = os.path.join(CHECKPOINTS_OUT_PATH, os.path.basename(XTTS_CHECKPOINT_LINK))  # model.pth file
 XTTS_CHECKPOINT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "checkpoint.pth")
 print("checkpoint path: ", XTTS_CHECKPOINT)
@@ -93,7 +95,7 @@ def main():
         max_text_length=200,
         mel_norm_file=MEL_NORM_FILE,
         dvae_checkpoint=DVAE_CHECKPOINT,
-        xtts_checkpoint=XTTS_CHECKPOINT,  # checkpoint path of the model that you want to fine-tune
+#        xtts_checkpoint=XTTS_CHECKPOINT,  # checkpoint path of the model that you want to fine-tune
         tokenizer_file=TOKENIZER_FILE,
         gpt_num_audio_tokens=1026,
         gpt_start_audio_token=1024,
@@ -127,7 +129,7 @@ def main():
         save_n_checkpoints=1,
         save_checkpoints=True,
         # target_loss="loss",
-        print_eval=False,
+        print_eval=True,
         # Optimizer values like tortoise, pytorch implementation with modifications to not apply WD to non-weight parameters.
         optimizer="AdamW",
         optimizer_wd_only_on_weights=OPTIMIZER_WD_ONLY_ON_WEIGHTS,

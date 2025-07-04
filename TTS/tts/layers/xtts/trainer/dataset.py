@@ -6,6 +6,8 @@ import torch
 import torch.nn.functional as F
 import torch.utils.data
 
+import json
+
 from TTS.tts.models.xtts import load_audio
 
 torch.set_num_threads(1)
@@ -83,8 +85,8 @@ class XTTSDataset(torch.utils.data.Dataset):
         for sample in self.samples:
             try:
                 tseq, _, wav, _, _, _ = self.load_item(sample)
-            except:
-                print("fail to load a sample")
+            except Exception as e:
+                print("fail to load a sample: ", e)
                 continue
             # Basically, this audio file is nonexistent or too long to be supported by the dataset.
             if (wav is None):
@@ -106,9 +108,9 @@ class XTTSDataset(torch.utils.data.Dataset):
     def get_text(self, text, lang):
         tokens = self.tokenizer.encode(text, lang)
         tokens = torch.IntTensor(tokens)
-        assert not torch.any(tokens == 1), f"UNK token found in {text} -> {self.tokenizer.decode(tokens)}"
+        assert not torch.any(tokens == 1), f"UNK token found in {text} of {lang} -> {tokens} -> {self.tokenizer.decode(tokens)}"
         # The stop token should always be sacred.
-        assert not torch.any(tokens == 0), f"Stop token found in {text}"
+        assert not torch.any(tokens == 0), f"Stop token found in {text} of {lang}"
         return tokens
 
     def load_item(self, sample):
@@ -117,8 +119,10 @@ class XTTSDataset(torch.utils.data.Dataset):
         audiopath = sample["audio_file"]
         wav = load_audio(audiopath, self.sample_rate)
         if text is None or len(text.strip()) == 0:
+            print('no text:', json.dumps(sample))
             raise ValueError
         if wav is None or wav.shape[-1] < (0.5 * self.sample_rate):
+            print('no wav:', json.dumps(sample))
             # Ultra short clips are also useless (and can cause problems within some models).
             raise ValueError
 

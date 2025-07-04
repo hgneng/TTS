@@ -643,7 +643,7 @@ class VoiceBpeTokenizer:
         return cutlet.Cutlet()
 
     def check_input_length(self, txt, lang):
-        lang = lang.split("-")[0]  # remove the region
+        #lang = lang.split("-")[0]  # remove the region
         limit = self.char_limits.get(lang, 250)
         if len(txt) > limit:
             print(
@@ -667,7 +667,8 @@ class VoiceBpeTokenizer:
         return txt
 
     def encode(self, txt, lang):
-        lang = lang.split("-")[0]  # remove the region
+        # zh-cn and zh-yue should be different?
+        #lang = lang.split("-")[0]  # remove the region
         self.check_input_length(txt, lang)
         txt = self.preprocess_text(txt, lang)
         lang = "zh-cn" if lang == "zh" else lang

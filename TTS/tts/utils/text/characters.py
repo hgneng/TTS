@@ -90,6 +90,7 @@ class BaseVocabulary:
             self._id_to_char = {
                 idx: char for idx, char in enumerate(self._vocab)  # pylint: disable=unnecessary-comprehension
             }
+            print('utils.text.characters.vocab:', self._char_to_id)
 
     @staticmethod
     def init_from_config(config, **kwargs):
