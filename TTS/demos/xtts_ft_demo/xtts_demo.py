@@ -188,6 +188,7 @@ if __name__ == "__main__":
                     "cs",
                     "ar",
                     "zh",
+                    "yue",
                     "hu",
                     "ko",
                     "ja"
@@ -339,6 +340,7 @@ if __name__ == "__main__":
                             "cs",
                             "ar",
                             "zh",
+                            "yue",
                             "hu",
                             "ko",
                             "ja",

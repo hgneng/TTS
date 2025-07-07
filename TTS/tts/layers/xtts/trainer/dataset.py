@@ -114,6 +114,7 @@ class XTTSDataset(torch.utils.data.Dataset):
         return tokens
 
     def load_item(self, sample):
+        #print('tts.layer.xtts.trainer.dataset.load_item:', sample)
         text = str(sample["text"])
         tseq = self.get_text(text, sample["language"])
         audiopath = sample["audio_file"]

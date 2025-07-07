@@ -23,6 +23,7 @@ def chinese_text_to_phonemes(text: str, seperator: str = "|") -> str:
     tokenized_text = jieba.cut(text, HMM=False)
     tokenized_text = " ".join(tokenized_text)
     pinyined_text: List[str] = _chinese_character_to_pinyin(tokenized_text)
+    print('tts.utils.text.chinese_mandarin.chinese_text_to_phonemes:', text, '=>', pinyined_text)
 
     results: List[str] = []
 

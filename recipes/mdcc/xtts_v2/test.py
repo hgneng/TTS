@@ -18,7 +18,7 @@ gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(audio_path=[
 print("Inference...")
 out = model.inference(
     "我挥一挥衣袖，不带走一片云彩。", #ngo5 wui2 syut3 jyut6 jyu5", #
-    "zh-yue",
+    "yue",
     gpt_cond_latent,
     speaker_embedding,
     temperature=0.7, # Add custom parameters here

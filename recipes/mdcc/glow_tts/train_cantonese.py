@@ -58,8 +58,10 @@ config = GlowTTSConfig(
     datasets=[dataset_config],
     test_sentences=field(
         default_factory=lambda: [
-            "我挥一挥衣袖，不带走一片云彩。",
-            "我不知道这些测试句子有什么用。",
+            "It took me quite a long time to develop a voice, and now that I have it I'm not going to be silent.",
+            "Be a voice, not an echo.",
+            #"我挥一挥衣袖，不带走一片云彩。",
+            #"我不知道这些测试句子有什么用。",
         ]
     )
 )

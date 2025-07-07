@@ -51,11 +51,11 @@ if __name__ == "__main__":
     #     print(char)
 
     # 输出到文件
-    with open('cantonese_chars.txt', 'w', encoding='utf-8') as f:
-        for char in generate_cantonese_characters():
-            f.write('"' + char + '": ' + str(id) + ',\n')
-            id += 1
+    #with open('cantonese_chars.txt', 'w', encoding='utf-8') as f:
+    #    for char in generate_cantonese_characters():
+    #        f.write('"' + char + '": ' + str(id) + ',\n')
+    #        id += 1
 
     extract_characters('jyutping_phon_list.txt', id)
-    print("粤语字符集已生成到 cantonese_chars.txt")
+    #print("粤语字符集已生成到 cantonese_chars.txt")
 

@@ -4,6 +4,7 @@ import textwrap
 from functools import cached_property
 
 import pypinyin
+import pycantonese
 import torch
 from hangul_romanize import Transliter
 from hangul_romanize.rule import academic
@@ -19,7 +20,7 @@ from TTS.tts.layers.xtts.zh_num2words import TextNorm as zh_num2words
 
 
 def get_spacy_lang(lang):
-    if lang == "zh" or lang == "zh-yue":
+    if lang == "zh" or lang == "yue":
         return Chinese()
     elif lang == "ja":
         return Japanese()
@@ -177,10 +178,10 @@ _abbreviations = {
             # Chinese doesn't typically use abbreviations in the same way as Latin-based scripts.
         ]
     ],
-    "zh-yue": [
+    "yue": [
         (re.compile("\\b%s\\." % x[0], re.IGNORECASE), x[1])
         for x in [
-            # Chinese doesn't typically use abbreviations in the same way as Latin-based scripts.
+            # Caneonse doesn't typically use abbreviations in the same way as Latin-based scripts.
         ]
     ],
     "cs": [
@@ -355,8 +356,8 @@ _symbols_multilingual = {
             ("°", " 度 "),
         ]
     ],
-    "zh-yue": [
-        # Chinese
+    "yue": [
+        # Cantonese
         (re.compile(r"%s" % re.escape(x[0]), re.IGNORECASE), x[1])
         for x in [
             ("&", " 和 "),
@@ -539,7 +540,7 @@ def _expand_number(m, lang="en"):
 
 
 def expand_numbers_multilingual(text, lang="en"):
-    if lang == "zh" or lang == "zh-yue":
+    if lang == "zh" or lang == "yue":
         text = zh_num2words()(text)
     else:
         if lang in ["en", "ru"]:
@@ -589,10 +590,18 @@ def basic_cleaners(text):
 
 
 def chinese_transliterate(text):
-    return "".join(
+    pinyin = "".join(
         [p[0] for p in pypinyin.pinyin(text, style=pypinyin.Style.TONE3, heteronym=False, neutral_tone_with_five=True)]
     )
+    #print('chinese_transliterate:', text, '=>', pinyin)
+    return pinyin
 
+def cantonese_transliterate(text):
+    jyutping = "".join(
+        [p[1] for p in pycantonese.characters_to_jyutping(text)]
+    )
+    #print('cantonese_transliterate:', text, '=>', jyutping)
+    return jyutping
 
 def japanese_cleaners(text, katsu):
     text = katsu.romaji(text)
@@ -625,7 +634,7 @@ class VoiceBpeTokenizer:
             "pt": 203,
             "pl": 224,
             "zh": 82,
-            "zh-yue": 82,
+            "yue": 82,
             "ar": 166,
             "cs": 186,
             "ru": 182,
@@ -651,10 +660,12 @@ class VoiceBpeTokenizer:
             )
 
     def preprocess_text(self, txt, lang):
-        if lang in {"ar", "cs", "de", "en", "es", "fr", "hu", "it", "nl", "pl", "pt", "ru", "tr", "zh", "zh-yue", "ko"}:
+        if lang in {"ar", "cs", "de", "en", "es", "fr", "hu", "it", "nl", "pl", "pt", "ru", "tr", "zh", "yue", "ko"}:
             txt = multilingual_cleaners(txt, lang)
-            if lang == "zh" or lang == "zh-yue":
+            if lang == "zh":
                 txt = chinese_transliterate(txt)
+            if lang == "yue":
+                txt = cantonese_transliterate(txt)
             if lang == "ko":
                 txt = korean_transliterate(txt)
         elif lang == "ja":
@@ -667,14 +678,19 @@ class VoiceBpeTokenizer:
         return txt
 
     def encode(self, txt, lang):
-        # zh-cn and zh-yue should be different?
-        #lang = lang.split("-")[0]  # remove the region
+        #print('ttx.layers.xtts.tokenizer.encode begin:', txt, lang)
+        lang = lang.split("-")[0]  # remove the region
         self.check_input_length(txt, lang)
+        #print('ttx.layers.xtts.tokenizer.encode check_input_length:', txt)
         txt = self.preprocess_text(txt, lang)
+        #print('ttx.layers.xtts.tokenizer.encode preprocess_text:', txt)
         lang = "zh-cn" if lang == "zh" else lang
         txt = f"[{lang}]{txt}"
         txt = txt.replace(" ", "[SPACE]")
-        return self.tokenizer.encode(txt).ids
+        #print('ttx.layers.xtts.tokenizer.encode replace:', txt)
+        ids = self.tokenizer.encode(txt).ids
+        #print('ttx.layers.xtts.tokenizer.encode end:', txt, '=>', ids)
+        return ids
 
     def decode(self, seq):
         if isinstance(seq, torch.Tensor):
