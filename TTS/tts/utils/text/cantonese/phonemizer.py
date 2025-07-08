@@ -2,6 +2,7 @@ from typing import List
 
 import re
 import pycantonese
+from opencc import OpenCC
 
 from .jyutpingToPhonemes import JYUTPING_DICT
 
@@ -23,14 +24,15 @@ def _cantonese_jyutping_to_phoneme(pinyin: str) -> str:
     return phoneme + tone
 
 def cantonese_text_to_phonemes(text: str, seperator: str = "|") -> str:
-    jyutpings = pycantonese.characters_to_jyutping(text)
+    cc = OpenCC('s2t')
+    jyutpings = pycantonese.characters_to_jyutping(cc.convert(text))
     print('tts.utils.text.cantonese.cantonese_text_to_phonemes:', text, '=>', jyutpings)
     #print(jyutpings)
     tokens = []
     for word in jyutpings:
         jyutpingWord = word[1]
         if jyutpingWord == None:
-            tokens.append('v')
+            tokens.append(word[0]) # 不是粤拼范围，返回原始文本
         else:
             tokens.extend(re.findall(r'[a-zA-Z]+[0-9]+', jyutpingWord))
     

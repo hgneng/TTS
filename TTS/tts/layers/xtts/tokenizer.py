@@ -15,6 +15,7 @@ from spacy.lang.es import Spanish
 from spacy.lang.ja import Japanese
 from spacy.lang.zh import Chinese
 from tokenizers import Tokenizer
+from opencc import OpenCC
 
 from TTS.tts.layers.xtts.zh_num2words import TextNorm as zh_num2words
 
@@ -597,9 +598,14 @@ def chinese_transliterate(text):
     return pinyin
 
 def cantonese_transliterate(text):
-    jyutping = "".join(
-        [p[1] for p in pycantonese.characters_to_jyutping(text)]
-    )
+    cc = OpenCC('s2t')
+    jyutping = ''
+
+    for p in pycantonese.characters_to_jyutping(cc.convert(text)):
+        if p[1] != None:
+            jyutping += p[1]
+        else:
+            jyutping += p[0]
     #print('cantonese_transliterate:', text, '=>', jyutping)
     return jyutping
 

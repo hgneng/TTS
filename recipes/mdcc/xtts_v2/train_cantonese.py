@@ -129,7 +129,7 @@ def main():
         save_n_checkpoints=1,
         save_checkpoints=True,
         # target_loss="loss",
-        print_eval=True,
+        print_eval=False,
         # Optimizer values like tortoise, pytorch implementation with modifications to not apply WD to non-weight parameters.
         optimizer="AdamW",
         optimizer_wd_only_on_weights=OPTIMIZER_WD_ONLY_ON_WEIGHTS,
