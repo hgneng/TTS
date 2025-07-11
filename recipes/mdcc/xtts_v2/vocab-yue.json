@@ -31,7 +31,7 @@
           "normalized": false
       },
       {
-          "id": 40,
+          "id": 3,
           "special": true,
           "content": "[yue]",
           "single_word": false,
@@ -57,7 +57,7 @@
         "[STOP]": 0,
         "[UNK]": 1,
         "[SPACE]": 2,
-  "$": 3,
+  "[yue]": 3,
   "%": 4,
   "&": 5,
   "'": 6,

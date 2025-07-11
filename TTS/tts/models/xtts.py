@@ -770,6 +770,7 @@ class Xtts(BaseTTS):
 
         self.init_models()
 
+        print('load checkpoint:', model_path)
         checkpoint = self.get_compatible_checkpoint_state_dict(model_path)
 
         # deal with v1 and v1.1. V1 has the init_gpt_for_inference keys, v1.1 do not
