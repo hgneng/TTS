@@ -691,7 +691,13 @@ class VoiceBpeTokenizer:
         txt = self.preprocess_text(txt, lang)
         #print('ttx.layers.xtts.tokenizer.encode preprocess_text:', txt)
         lang = "zh-cn" if lang == "zh" else lang
-        txt = f"[{lang}]{txt}"
+
+        # 处理[yue]，替换成,yue，避免token=1
+        if lang == 'yue':
+            txt = f"({lang}){txt}"
+        else:
+            txt = f"[{lang}]{txt}"
+
         txt = txt.replace(" ", "[SPACE]")
         #print('ttx.layers.xtts.tokenizer.encode replace:', txt)
         ids = self.tokenizer.encode(txt).ids
