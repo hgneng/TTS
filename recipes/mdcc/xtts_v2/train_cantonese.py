@@ -29,7 +29,7 @@ config_dataset = BaseDatasetConfig(
     formatter="mdcc",
     dataset_name="mdcc",
     path="mdcc-dataset/",
-    meta_file_train="cnt_asr_train_metadata.csv",
+    meta_file_train="train.csv",
     meta_file_val="cnt_asr_valid_metadata.csv",
     language="yue",
 )
@@ -81,7 +81,8 @@ if not os.path.isfile(TOKENIZER_FILE) or not os.path.isfile(XTTS_CHECKPOINT):
 # Training sentences generations
 SPEAKER_REFERENCE = [
 #    "./tests/data/ljspeech/wavs/LJ001-0002.wav"  # speaker reference to be used in training test sentences
-    "mdcc-dataset/audio/447_1705221219_14999_1008.98_1012.92.wav"
+#    "mdcc-dataset/audio/447_1705221219_14999_1008.98_1012.92.wav"
+    "mdcc-dataset/audio/447_1705221219_14999_1035.72_1049.94.wav"
 ]
 LANGUAGE = config_dataset.language
 
@@ -92,8 +93,8 @@ def main():
         max_conditioning_length=132300,  # 6 secs
         min_conditioning_length=66150,  # 3 secs
         debug_loading_failures=False,
-        max_wav_length=255995,  # ~11.6 seconds
-        max_text_length=200,
+        max_wav_length=500000, #255995,  # ~11.6 seconds
+        max_text_length=500, #200,
         mel_norm_file=MEL_NORM_FILE,
         dvae_checkpoint=DVAE_CHECKPOINT,
         xtts_checkpoint=XTTS_CHECKPOINT,  # checkpoint path of the model that you want to fine-tune
@@ -105,7 +106,7 @@ def main():
         gpt_use_perceiver_resampler=True,
     )
     # define audio config
-    audio_config = XttsAudioConfig(sample_rate=16000, dvae_sample_rate=22050, output_sample_rate=24000)
+    audio_config = XttsAudioConfig(sample_rate=22050, dvae_sample_rate=22050, output_sample_rate=22050)
     # training parameters config
     config = GPTTrainerConfig(
         output_path=OUT_PATH,

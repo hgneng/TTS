@@ -75,7 +75,7 @@ def calculate_average_audio_length(folder_path: str, supported_extensions: List[
 
 if __name__ == "__main__":
     # 替换为你的音频目录路径（绝对路径或相对路径均可）
-    TARGET_FOLDER = "./mdcc-dataset/audio"  # 示例：你的训练数据音频目录
+    TARGET_FOLDER = "./dataset/clips"  # 示例：你的训练数据音频目录
     
     # 检查目录是否存在
     if not os.path.isdir(TARGET_FOLDER):
